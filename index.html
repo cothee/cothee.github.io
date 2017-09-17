@@ -1,47 +1,203 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>some plans for learning something by cothee</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-dark.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <meta charset="UTF-8">
+    <title>the use of pipe by cothee</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/cothee">View On GitHub</a></li>
-        </nav>
-      </div><!-- end header -->
+    <section class="page-header">
+      <h1 class="project-name">the use of pipe</h1>
+      <h2 class="project-tagline">UNP(II) reading notes</h2>
+    </section>
 
-    <div class="wrapper">
+    <section class="main-content">
+      <h1>
+<a id="the-use-of-pipe" class="anchor" href="#the-use-of-pipe" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>the use of pipe</h1>
+<p>the head file of the pipe() function is <strong>&lt;unistd.h&gt;</strong>:</p>
+<div class="highlight highlight-source-c++"><pre>#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>unistd.h<span class="pl-pds">&gt;</span></span>
 
-      <section>
-        <div id="title">
-          <h1>some plans for learning something</h1>
-          <p>Try to accumulate a piece of knowledge about technology every day</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/cothee">cothee</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+<span class="pl-k">int</span> <span class="pl-en">pipe</span>(<span class="pl-k">int</span> fd[<span class="pl-c1">2</span>]);</pre></div>
+<h2>
+<a id="1-the-use-of-pipe-in-inter-process-communications" class="anchor" href="#1-the-use-of-pipe-in-inter-process-communications" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. the use of pipe in inter-process communications</h2>
+<p>  Pipe is often used for communications between processes which have genetic relationship with each other. the following is an example given by UNP(II):</p>
+<div class="highlight highlight-source-c++"><pre>#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>unistd.h<span class="pl-pds">&gt;</span></span>      <span class="pl-c"><span class="pl-c">/*</span>pipe() &amp;&amp; fork() &amp; write() &amp; read() &amp; STDOOUT_FILENO<span class="pl-c">*/</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>sys/types.h<span class="pl-pds">&gt;</span></span>  <span class="pl-c"><span class="pl-c">/*</span> pid_t ssize_t<span class="pl-c">*/</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>sys/wait.h<span class="pl-pds">&gt;</span></span>  <span class="pl-c"><span class="pl-c">/*</span> waitpid() <span class="pl-c">*/</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>stdio.h<span class="pl-pds">&gt;</span></span>    <span class="pl-c"><span class="pl-c">/*</span>fgets(), stdin<span class="pl-c">*/</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>string.h<span class="pl-pds">&gt;</span></span>  <span class="pl-c"><span class="pl-c">/*</span>strlen<span class="pl-c">*/</span></span> 
 
-        <h1>
-<a id="cotheegithubio" class="anchor" href="#cotheegithubio" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>cothee.github.io</h1>
-<p>just try to accumulate a piece of knowledge about technology every day</p>
-      </section>
+#<span class="pl-k">define</span> <span class="pl-en">BUFFERSIZE</span> <span class="pl-c1">20</span>
 
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+<span class="pl-k">void</span> <span class="pl-en">client</span>(<span class="pl-k">int</span> readfd, <span class="pl-k">int</span> writefd);
+<span class="pl-k">void</span> <span class="pl-en">server</span>(<span class="pl-k">int</span> readfd, <span class="pl-k">int</span> writefd);
     
+<span class="pl-k">int</span> <span class="pl-en">main</span>(<span class="pl-k">int</span> argc, <span class="pl-k">char</span> *argv[]) {
+ <span class="pl-k">int</span> pipe1[<span class="pl-c1">2</span>], pipe2[<span class="pl-c1">2</span>];
+ <span class="pl-c1">pid_t</span> child_pid;
+ 
+ <span class="pl-c1">pipe</span>(pipe1);  <span class="pl-c"><span class="pl-c">/*</span> create two pipes <span class="pl-c">*/</span></span>
+ <span class="pl-c1">pipe</span>(pipe2);
+ 
+ <span class="pl-k">if</span>( (child_pid = <span class="pl-c1">fork</span>()) == <span class="pl-c1">0</span>) {    <span class="pl-c"><span class="pl-c">/*</span>child process for server <span class="pl-c">*/</span></span>
+  <span class="pl-c1">close</span>(pipe1[<span class="pl-c1">1</span>]);  <span class="pl-c"><span class="pl-c">/*</span> close write fd<span class="pl-c">*/</span></span>
+  <span class="pl-c1">close</span>(pipe2[<span class="pl-c1">0</span>]);  <span class="pl-c"><span class="pl-c">/*</span> close read fd <span class="pl-c">*/</span></span>
+   
+  <span class="pl-c1">server</span>(pipe1[<span class="pl-c1">0</span>], pipe2[<span class="pl-c1">1</span>]);  <span class="pl-c"><span class="pl-c">/*</span>read from pipe1[0], and write to pipe2[1]<span class="pl-c">*/</span></span>
+  <span class="pl-c1">exit</span>(); 
+ }
+ 
+ <span class="pl-c1">close</span>(pipe1[<span class="pl-c1">1</span>]);
+ <span class="pl-c1">close</span>(pipe2[<span class="pl-c1">0</span>]);
+ 
+ <span class="pl-c1">client</span>(pipe1[<span class="pl-c1">1</span>], pipe2[<span class="pl-c1">0</span>]); <span class="pl-c"><span class="pl-c">/*</span>write to pipe1[0], and read from pipe2[1]<span class="pl-c">*/</span></span>
+ 
+ <span class="pl-c1">waitpid</span>(child_pid, <span class="pl-c1">NULL</span>, <span class="pl-c1">0</span>);
+ 
+}
+
+<span class="pl-k">void</span> <span class="pl-en">client</span>(<span class="pl-k">int</span> readfd, <span class="pl-k">int</span> writefd) {
+ <span class="pl-c1">size_t</span> len;
+ <span class="pl-c1">ssize_t</span> n;
+ <span class="pl-k">char</span> buff[BUFFERSIZE];
+ 
+ <span class="pl-c1">fgets</span>(buff, BUFFERSIZE, stdin);
+ 
+ len = <span class="pl-c1">strlen</span>(buff);
+
+ <span class="pl-k">if</span> (buff[len-<span class="pl-c1">1</span>] == <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\n</span><span class="pl-pds">'</span></span>){
+  len--;
+ }
+ 
+ <span class="pl-c1">write</span>(writefd, buff, len);
+ 
+ <span class="pl-k">while</span> ((n = <span class="pl-c1">read</span>(readfd, buff, BUFFERSIZE)) &gt; <span class="pl-c1">0</span>) {
+  <span class="pl-c1">write</span>(writefd, buff, n);
+ }
+}
+
+<span class="pl-k">void</span> <span class="pl-en">server</span>(<span class="pl-k">int</span> readfd, <span class="pl-k">int</span> writefd) {
+ <span class="pl-c1">size_t</span> len;
+ <span class="pl-c1">ssize_t</span> n;
+ <span class="pl-k">int</span> fd;
+ <span class="pl-k">char</span> buff[BUFFERSIZE+<span class="pl-c1">1</span>];
+ 
+ <span class="pl-k">if</span> (n = <span class="pl-c1">read</span>(readfd, buff, BUFFERSIZE) == <span class="pl-c1">0</span>) {
+  <span class="pl-c1">printf</span>(<span class="pl-s"><span class="pl-pds">"</span>server read error!<span class="pl-pds">"</span></span>);
+  <span class="pl-c1">eixt</span>(<span class="pl-c1">1</span>);
+ }
+ buff[n] = <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\0</span><span class="pl-pds">'</span></span>;
+ 
+ <span class="pl-k">if</span> ((fd = <span class="pl-c1">open</span>(buff,O_RDONLY)) &lt; <span class="pl-c1">0</span>) {
+  <span class="pl-c1">snprintf</span>(buff + n, <span class="pl-k">sizeof</span>(buff) - n, <span class="pl-s"><span class="pl-pds">"</span>can not open: %s<span class="pl-cce">\n</span><span class="pl-pds">"</span></span>, <span class="pl-c1">stderror</span>(errno));
+  n = <span class="pl-c1">strlen</span>(buff);
+  <span class="pl-c1">write</span>(writefd, buff, n);
+ }
+ <span class="pl-k">else</span> {
+  <span class="pl-k">while</span> ((n = <span class="pl-c1">read</span>(fd, buff, BUFFERSIZE)) &gt; <span class="pl-c1">0</span>){
+   <span class="pl-c1">write</span>(writefd, buff, n);
+  }
+  <span class="pl-c1">close</span>(fd);
+ }
+
+}</pre></div>
+<h2>
+<a id="2-the-use-of-pipe-combing-with-select-in-controlling-the-executing-time-of-a-process" class="anchor" href="#2-the-use-of-pipe-combing-with-select-in-controlling-the-executing-time-of-a-process" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2. the use of pipe( combing with select) in controlling the executing time of a process</h2>
+<p>   We can alose use pipe combing with select() to controlling the executing time of a child process,
+I first saw this kind of usage in one of our team projects named <a href="https://github.com/Qihoo360/QConf/blob/master/agent/qconf_script.cc#L50">Qconf</a>.
+I'll just paste the codes here straightforward, and then give my understanding of these codes.</p>
+<div class="highlight highlight-source-c++"><pre><span class="pl-k">int</span> <span class="pl-en">execute_script</span>(<span class="pl-k">const</span> string &amp;script, <span class="pl-k">const</span> <span class="pl-k">long</span> mtimeout)
+{
+ <span class="pl-k">if</span> (script.<span class="pl-c1">empty</span>()) <span class="pl-k">return</span> QCONF_ERR_PARAM;
+
+ <span class="pl-k">int</span>     rv = <span class="pl-c1">0</span>;
+ <span class="pl-k">int</span>     pfd[<span class="pl-c1">2</span>];
+ <span class="pl-c1">pid_t</span>   pid;
+ <span class="pl-c1">fd_set</span>  set;
+ <span class="pl-k">struct</span>  <span class="pl-en">timeval</span> timeout;
+ timeout.<span class="pl-smi">tv_sec</span> = mtimeout / <span class="pl-c1">1000</span>;
+ timeout.<span class="pl-smi">tv_usec</span> = mtimeout % <span class="pl-c1">1000</span> * <span class="pl-c1">1000</span>;
+
+ <span class="pl-k">struct</span> <span class="pl-en">sigaction</span> act, oact;
+ <span class="pl-c1">sigemptyset</span>(&amp;act.<span class="pl-smi">sa_mask</span>);
+ act.<span class="pl-smi">sa_handler</span> = sig_child;
+ act.<span class="pl-smi">sa_flags</span> = SA_RESTART;
+ <span class="pl-c1">sigaction</span>(SIGCHLD, &amp;act, &amp;oact);
+
+ <span class="pl-k">if</span> (<span class="pl-c1">pipe</span>(pfd) &lt; <span class="pl-c1">0</span>) {
+  <span class="pl-c1">LOG_ERR</span>(<span class="pl-s"><span class="pl-pds">"</span>Failed to create pipe! error:%d<span class="pl-pds">"</span></span>, errno);
+  <span class="pl-k">return</span> QCONF_ERR_OTHER; 
+ }
+
+ <span class="pl-k">if</span> ((pid = <span class="pl-c1">fork</span>()) &lt; <span class="pl-c1">0</span>) {
+  <span class="pl-c1">LOG_ERR</span>(<span class="pl-s"><span class="pl-pds">"</span>Failed to fork process! error:%d<span class="pl-pds">"</span></span>, errno);
+  <span class="pl-k">return</span> QCONF_ERR_OTHER; 
+ } 
+ <span class="pl-k">else</span> <span class="pl-k">if</span> (<span class="pl-c1">0</span> == pid) {
+  <span class="pl-c1">setpgrp</span>();
+  <span class="pl-c1">close</span>(pfd[<span class="pl-c1">0</span>]);
+  <span class="pl-c1">execl</span>(<span class="pl-s"><span class="pl-pds">"</span>/bin/sh<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>sh<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>-c<span class="pl-pds">"</span></span>, script.<span class="pl-c1">c_str</span>(), (<span class="pl-k">char</span> *)<span class="pl-c1">NULL</span>);
+  <span class="pl-c1">_exit</span>(<span class="pl-c1">127</span>);  <span class="pl-c"><span class="pl-c">//</span> won't be here, if execl was successful</span>
+ }
+
+ <span class="pl-c1">close</span>(pfd[<span class="pl-c1">1</span>]);
+ <span class="pl-k">do</span> {
+     <span class="pl-c1">FD_ZERO</span>(&amp;set); 
+     <span class="pl-c1">FD_SET</span>(pfd[<span class="pl-c1">0</span>], &amp;set);
+     rv = <span class="pl-c1">select</span>(pfd[<span class="pl-c1">0</span>] + <span class="pl-c1">1</span>, &amp;set, <span class="pl-c1">NULL</span>, <span class="pl-c1">NULL</span>, &amp;timeout);
+     <span class="pl-k">if</span> (-<span class="pl-c1">1</span> == rv) {
+      <span class="pl-k">if</span> (EINTR == errno) <span class="pl-k">continue</span>;
+      <span class="pl-k">else</span> {
+       <span class="pl-c1">LOG_ERR</span>(<span class="pl-s"><span class="pl-pds">"</span>Failed to select from pipe, error:%d!<span class="pl-pds">"</span></span>, errno);
+        <span class="pl-k">break</span>;
+      }
+     }
+     <span class="pl-k">else</span> <span class="pl-k">if</span>(<span class="pl-c1">0</span> == rv) {
+      <span class="pl-c1">LOG_FATAL_ERR</span>(<span class="pl-s"><span class="pl-pds">"</span>Script execute timeout! script:%s<span class="pl-pds">"</span></span>, script.<span class="pl-c1">c_str</span>());
+      <span class="pl-k">break</span>;
+     }
+     <span class="pl-k">else</span> {
+      <span class="pl-c1">close</span>(pfd[<span class="pl-c1">0</span>]); <span class="pl-c"><span class="pl-c">//</span> sub process has exit</span>
+      <span class="pl-k">return</span> QCONF_OK;
+     }
+    } <span class="pl-k">while</span> (<span class="pl-c1">true</span>);
+
+    <span class="pl-c1">close</span>(pfd[<span class="pl-c1">0</span>]);
+    <span class="pl-c1">kill</span>(-pid, SIGKILL);
+    <span class="pl-k">if</span> (<span class="pl-c1">0</span> == rv) 
+      <span class="pl-k">return</span> QCONF_ERR_SCRIPT_TIMEOUT;
+      
+    <span class="pl-k">return</span> QCONF_ERR_OTHER;
+}
+
+<span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">sig_child</span>(<span class="pl-k">int</span> sig) {
+ <span class="pl-c1">pid_t</span> pid;
+ <span class="pl-k">int</span> status;
+ <span class="pl-k">while</span> ((pid = <span class="pl-c1">waitpid</span>(-<span class="pl-c1">1</span>, &amp;status, WNOHANG)) &gt; <span class="pl-c1">0</span>) {
+  <span class="pl-k">if</span> (<span class="pl-c1">WIFEXITED</span>(status)) {
+   <span class="pl-k">if</span> (<span class="pl-c1">WEXITSTATUS</span>(status)) {
+    <span class="pl-c1">LOG_ERR</span>(<span class="pl-s"><span class="pl-pds">"</span>Script not exit with success, ret:%d<span class="pl-pds">"</span></span>, <span class="pl-c1">WEXITSTATUS</span>(status));
+   }
+  }
+  <span class="pl-k">else</span> {
+   <span class="pl-c1">LOG_ERR</span>(<span class="pl-s"><span class="pl-pds">"</span>Child process didnot terminate normally, pid:%d<span class="pl-pds">"</span></span>, pid);
+  }
+ }
+}
+</pre></div>
+<p>continue ……</p>
+
+      <footer class="site-footer">
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
   </body>
 </html>
