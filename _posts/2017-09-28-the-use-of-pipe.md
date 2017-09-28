@@ -1,5 +1,24 @@
-# the use of pipe #
-  the head file of the pipe() function is **<unistd.h>**:
+---
+layout: post
+title: the use of pipe
+categories:
+- linux
+tags: [c, linux]
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '1'
+  views: '2'
+  author:
+  login: cothee
+  email: cotheehi@gmail.com
+  display_name: cothee
+  first_name: ''
+  last_name: ''
+---
+
+&ensp;&ensp;the head file of the pipe() function is **`<unistd.h>`** :
 ```cpp
 #include <unistd.h>
 
