@@ -110,7 +110,7 @@ void server(int readfd, int writefd) {
 ```
 
 ## 2. the use of pipe( combing with select) in controlling the executing time of a process ##
-&ensp;&ensp; We can alose use pipe combing with select() to controlling the executing time of a child process, 
+&ensp;&ensp; We can also use pipe combing with select() to controlling the executing time of a child process, 
 I first saw this kind of usage in one of our team projects named [Qconf](https://github.com/Qihoo360/QConf/blob/master/agent/qconf_script.cc#L50).
 I'll just paste the codes here straightforward, and then give my understanding of these codes.
 ```cpp
@@ -176,7 +176,7 @@ int execute_script(const string &script, const long mtimeout)
       return QCONF_ERR_SCRIPT_TIMEOUT;
       
     return QCONF_ERR_OTHER;
-}
+}	
 
 static void sig_child(int sig) {
  pid_t pid;
@@ -188,12 +188,17 @@ static void sig_child(int sig) {
    }
   }
   else {
-   LOG_ERR("Child process didnot terminate normally, pid:%d", pid);
+   LOG_ERR("Child process did not terminate normally, pid:%d", pid);
   }
  }
 }
 
 ```
-continue ……
+
+&ensp;&ensp; sigaction(SIGCHLD,&act,&oact)  make the parent process deal with the "SIGCHLD" signal, and the signal handler is sig_child() function.
+
+&ensp;&ensp; execl() will start a new process that replace the child process forked by fork().
+
+&ensp;&ensp; in the select function,  the parameter timeout set the timeout of this function. when the child process execute timeout, the parent will kill its child process by kill().
 
 
