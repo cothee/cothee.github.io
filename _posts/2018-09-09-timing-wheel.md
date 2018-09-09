@@ -55,6 +55,6 @@ meta:
   用c++11实现，其中双链表用weak_ptr 和shared_ptr的实现，充分体现两种指针的用法。具体实现不完全线程安全(not thread-safe exactly)：tick()和add()操作之间是线程安全的，tick()和remove()之间也是线程安全的，Add()和remove()之间也是线程安全的(加锁实现)，但是tick本身只允许在一个线程当中调用(考虑到实际情况，我们也只需要在唯一的一个线程当中调用tick)。expired在每次tick之后做，和tick同一线程。
 
 ## References:  
-[1]http://www.cs.columbia.edu/~nahum/w6998/papers/sosp87-timing-wheels.pdf
+[1]http://www.cs.columbia.edu/~nahum/w6998/papers/sosp87-timing-wheels.pdf 
 [2]https://www.cse.wustl.edu/~cdgill/courses/cs6874/TimingWheels.ppt 
 [3]https://github.com/cothee/timewheel
