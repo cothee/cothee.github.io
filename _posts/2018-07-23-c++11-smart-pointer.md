@@ -25,14 +25,20 @@ meta:
   提供对对象的共享引用，可用构造函数或std::make_shared(c++11)创建;
 ## weak_ptr  
   首先，weak_ptr有几个特点：
-  (1) 增加weak_ptr不会增加shared_ptr的引用计数，其use_count方法返回的是shared_ptr的引用计数；
-  (2) 不能通过weak_ptr来使用实际的对象(除非借助lock方法来生成shared_ptr对象)，但可以借助它来确认指向的对象是否已经被delete掉了(expired方法)；
-  (3) 从weak_ptr的constructor可以看出，weak_ptr不能脱离shared_ptr而单独存在，也就是说，weak_ptr必须从shared_ptr或其他weak_ptr生成。
+ 
+ (1) 增加weak_ptr不会增加shared_ptr的引用计数，其use_count方法返回的是shared_ptr的引用计数；
+ 
+ (2) 不能通过weak_ptr来使用实际的对象(除非借助lock方法来生成shared_ptr对象)，但可以借助它来确认指向的对象是否已经被delete掉了(expired方法)；
+ 
+ (3) 从weak_ptr的constructor可以看出，weak_ptr不能脱离shared_ptr而单独存在，也就是说，weak_ptr必须从shared_ptr或其他weak_ptr生成。
   weak_ptr主要用于以下场景：
+
 (1)  解决循环引用问题: 这个应该是最广泛使用的场景了吧，在循环引用条件下，必须使用weak_ptr。而且一般两个对象一个是owner,一个是owned,owner里使用shared_ptr,owned里使用weak_ptr[2];
+
 (2)与shared_ptr结合使用，使用shared_ptr来管理数据，而使用weak_ptr来给数据的实际使用者，利用expired和lock方法，可以方便使用数据，并确定shared_ptr指向的实际数据是否已经被delete掉，当需要使用shared_ptr的时候，用lock方法返回一个shared_ptr[1,2]。“std::weak_ptr models temporary ownership: when an object needs to be accessed only if it exists, and it may be deleted at any time by someone else, std::weak_ptr is used to track the object, and it is converted to std::shared_ptr to assume temporary ownership. If the original std::shared_ptr is destroyed at this time, the object's lifetime is extended until the temporary std::shared_ptr is destroyed as well”[1]
 
 ## smart pointer 和 raw pointer的性能对比 
+
 参考博客[5]，先说下博客结论： There are only few reasons in modern C++ justifying the memory management with new and delete.
 自己写了测试代码实际测了下，代码如下[6] (https://github.com/cothee/interesting_test)：
 test.h ：
@@ -143,8 +149,13 @@ int main() {
 </p>
 ### references：  
 [1]https://en.cppreference.com/w/cpp/memory/weak_ptr  
+
 [2]https://stackoverflow.com/questions/12030650/when-is-stdweak-ptr-useful  
+
 [3]https://stackoverflow.com/questions/5671241/how-does-weak-ptr-work/5671308#5671308  
+
 [4]https://herbsutter.com/gotw/_102/  
+
 [5]http://www.modernescpp.com/index.php/memory-and-performance-overhead-of-smart-pointer  
+
 [6]https://github.com/cothee/interesting_test
