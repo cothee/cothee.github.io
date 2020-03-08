@@ -83,7 +83,7 @@ LSM-Tree的写放大主要来源于compaction，而compaction其实只需要对k
 
 (2) Range Query
   简单来说，随着 value size的增大，WiscKey 的吞吐主要在变大。而 value size 超过4KB以后，leveldb 的吞吐就开始变小。因此在小 value 场景下，leveldb 更有优势，而在 大 value 场景下，WiscKey则更有优势。
-  ### 6.3 空间放大
+### 6.3 空间放大
   大约60~80G 的用户实际数据, 如果没有 gc，WiscKey会占用100-140GB 的空间。而有 gc 的情况下，WiscKey的占用空间大约也为60-80GB，和用户数据本身差不多， Leveldb 占用的空间则在80-100GB 之间，比用户数据稍大。
 
 
