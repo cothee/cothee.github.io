@@ -15,10 +15,9 @@ meta:
   email: cotheehi@gmail.com
   display_name: cothee
 ---
-### 内存乱序、内存屏障以及Acquire/Release语义等若干问题
 ```
 If you understand quantum physics, you don't understand quantum physics.
-											           -Richard Feynman
+						--Richard Feynman
 ```
 
 #### 1. 为什么会有内存乱序(memory reording)
@@ -156,19 +155,36 @@ set_v != 0的情况下，这段原本*只读*的代码
 在多线程并发访问下会出问题吗？？(假设还有一个线程是写)
 */
 ```
+## References:  
+  
 [https://en.wikipedia.org/wiki/Memory_ordering#Compile-time_memory_barrier_implementation](https://en.wikipedia.org/wiki/Memory_ordering#Compile-time_memory_barrier_implementation)
+  
 [https://preshing.com/20120625/memory-ordering-at-compile-time/](https://preshing.com/20120625/memory-ordering-at-compile-time/)
+  
 [https://preshing.com/20120710/memory-barriers-are-like-source-control-operations/](https://preshing.com/20120710/memory-barriers-are-like-source-control-operations/)
+  
 [https://preshing.com/20120930/weak-vs-strong-memory-models/](https://preshing.com/20120930/weak-vs-strong-memory-models/)
+  
 [https://preshing.com/20120515/memory-reordering-caught-in-the-act/](https://preshing.com/20120515/memory-reordering-caught-in-the-act/)
+  
 [https://preshing.com/20120913/acquire-and-release-semantics/](https://preshing.com/20120913/acquire-and-release-semantics/)
+  
 [https://preshing.com/20120930/weak-vs-strong-memory-models/](https://preshing.com/20120930/weak-vs-strong-memory-models/)
+  
 [http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html](http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html)
+  
 [http://hedengcheng.com/?p=803](http://hedengcheng.com/?p=803)
+  
 [https://yarchive.net/comp/linux/compiler_barriers.html](https://yarchive.net/comp/linux/compiler_barriers.html)
+  
 [https://www.kernel.org/doc/Documentation/memory-barriers.txt](https://www.kernel.org/doc/Documentation/memory-barriers.txt)
+  
 [https://stackoverflow.com/questions/49225302/using-compare-and-read-write-operations-for-stdatomicbool-in-c](https://stackoverflow.com/questions/49225302/using-compare-and-read-write-operations-for-stdatomicbool-in-c)
+  
 [https://en.cppreference.com/w/cpp/atomic/atomic](https://en.cppreference.com/w/cpp/atomic/atomic)
+  
 [https://stackoverflow.com/questions/19965076/gcc-memory-barrier-sync-synchronize-vs-asm-volatile-memory](https://stackoverflow.com/questions/19965076/gcc-memory-barrier-sync-synchronize-vs-asm-volatile-memory)
+  
 [http://bruceblinn.com/linuxinfo/MemoryBarriers.html](http://bruceblinn.com/linuxinfo/MemoryBarriers.html)
+  
 [https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-258.html](https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-258.html)
